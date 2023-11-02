@@ -1,9 +1,9 @@
-<h1 align="center">🚑<strong> findER </strong>🚑</h1>
+<h1 align="center"><strong> 부기마켓 </strong></h1>
 
 <div align="center">
-  <strong>2023년 제 17회 공개SW 개발자대회</strong>
+  <strong>2023 한성대학교 컴퓨터공학부 캡스톤디자인 전시발표회 출품작</strong>
   <br><br>
-  <em>실시간 응급실 정보 제공 서비스 애플리케이션, findER</em>
+  <em>한성대학교 교내 중고 거래 서비스 어플리케이션, 부기마켓</em>
   <br><br>
   <em>written by LapinMin</em>
 </div>
