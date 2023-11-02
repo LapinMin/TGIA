@@ -5,7 +5,7 @@
   <br><br>
   <em>실시간 응급실 정보 제공 서비스 애플리케이션, findER</em>
   <br><br>
-  <em>written by gretea5 & wingunkh</em>
+  <em>written by LapinMin</em>
 </div>
 
 ## 🔖 목차
@@ -196,10 +196,12 @@
 </div>
 
 ## 🖻 시스템 구조도
-<img width="895" alt="image" src="https://github.com/gretea5/findER-frontend/assets/120379834/f94a9594-c195-48fc-bfc4-a8fd02e64f2d">
+<img width="895" alt="image" src="https://github.com/LapinMin/TGIA/assets/130971355/fb04da65-6c02-449e-b3f1-0db2268eb9f9">
 
-> 백엔드 애플리케이션 : 모바일 애플리케이션의 백엔드 애플리케이션 <br>
-> 트래커 애플리케이션 : 1분 간격으로 전국 400여 개의 응급실의 실시간 병상 수를 갱신하기 위한 별도의 애플리케이션
+> React Native 애플리케이션 : 중고 거래 모바일 어플리케이션 <br>
+> React 웹페이지 : 서비스 관리자 전용 통계 조회 웹 어플리케이션 <br>
+? 백엔드 애플리케이션 : 모바일 애플리케이션의 백엔드 어플리케이션 <br>
+> Yolov5 애플리케이션 : 게시글 작성시 상품 카테고리 추천을 위한 딥러닝 AI 어플리케이션<br>
 
 ## 👩‍👩‍👧‍👦 팀원 및 담당 파트
 <div sytle="overflow:hidden;">
