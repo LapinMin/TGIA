@@ -1,7 +1,6 @@
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { launchImageLibrary, launchCamera } from "react-native-image-picker";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
@@ -26,18 +25,14 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator
 } from "react-native";
-import api from "../../api";
 import useStore from "../../../store";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import cancel from "../../assets/design/backIcon.png";
-import nextIcon from "../../assets/design/nextIcon.png";
 import gallery from "../../assets/design/camera.png";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Axios from "axios";
 import { categories } from "../../assets/data/category";
 import { places } from "../../assets/data/place";
 import { tracks } from "../../assets/data/track";
-import { Post } from "../../types/PostType";
 
 type RootStackParamList = {
   Add: undefined;
@@ -58,7 +53,6 @@ function AddScreen({ route, navigation }: AddScreenProps) {
   const [itemName, setItemName] = useState(""); // 물품명
   const [category, setCategory] = useState(""); //게시글 카테고리
   const [text, setText] = useState(""); //게시글 내용
-  const [time, setTime] = useState(""); //게시글 작성 시간
   const [images, setImages] = useState([]); //게시글 이미지
   const [sendImages, setSendImages] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -74,19 +68,10 @@ function AddScreen({ route, navigation }: AddScreenProps) {
   const [placeVisible, setPlaceVisible] = useState(false);
   const [trackVisible, setTrackVisible] = useState(false);
   //const [item_name, setItem_name] = useState("");
-  const [trackWord, setTrackWord] = useState("");
   const [modalOpen, setModalOpen] = useState(false); //모달 open시 배경 어둡게 하기 위한 state
   const [isLoading, setIsLoading] = useState(false);
 
   const [isCategoryRecommended, setIsCategoryRecommended] = useState(false);
-
-  const formData = new FormData(); //서버로 전송할 데이터 공간
-
-  var date = new Date();
-  var postTime = new Intl.DateTimeFormat("locale", {
-    dateStyle: "long",
-    timeStyle: "medium"
-  }).format(date);
 
   function renderScreen() {
     if (board !== "new") {
@@ -104,8 +89,6 @@ function AddScreen({ route, navigation }: AddScreenProps) {
         images.push({ image: `${url}/images/${item}`, boardImage: true });
       });
       setIsCategoryRecommended(!isCategoryRecommended);
-    } else {
-      setTime(postTime);
     }
   }
 
@@ -235,6 +218,8 @@ function AddScreen({ route, navigation }: AddScreenProps) {
     setModalOpen(!modalOpen);
     setImageVisible(!imageVisible);
   };
+
+  /** 이미지 모달 뷰 */
   const ImageModal = () => {
     return (
       <Modal
@@ -293,10 +278,11 @@ function AddScreen({ route, navigation }: AddScreenProps) {
     );
   };
 
+  /** 카메라 사진 촬영 함수 */
   const shootImage = async () => {
     let launchFunction = null;
 
-    if (Platform.OS === "android") {
+    if (Platform.OS === "android") { // 안드로이드 OS의 경우
       try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -437,7 +423,9 @@ function AddScreen({ route, navigation }: AddScreenProps) {
     );
   };
 
+  /** 선택한 이미지 표시 함수 */
   const renderImages = (item) => {
+    /** 이미지 선택 취소할 경우 함수 */
     const deleteImage = () => {
       const newImages = images.filter((image) => image !== item.item);
       const newSendImages = sendImages.filter(
@@ -471,15 +459,14 @@ function AddScreen({ route, navigation }: AddScreenProps) {
     );
   };
 
-  /** 카테고리 모달 관리 함수
-   * showCategory : 선택한 카테고리를 한글로 출력하는 함수
-   * categoryModalControl : 카테고리 모달 open/close 관리 함수
-   * CategoryModal : 카테고리 모달 컴포넌트 함수
-   */
+  //카테고리 모달 관리 함수
+
+  /** 카테고리 모달 open/close 관리 함수 */
   const categoryModalControl = () => {
     setModalOpen(!modalOpen);
     setCategoryVisible(!categoryVisible);
   };
+  /** 카테고리 모달 컴포넌트 */
   const CategoryModal = () => {
     return (
       <Modal
@@ -524,15 +511,13 @@ function AddScreen({ route, navigation }: AddScreenProps) {
     );
   };
 
-  /** 거래 장소 모달 관리 함수 */
-  // const showPlace = (selected: string) => {
-  //   const selection = places.filter((item) => item.value === selected);
-  //   return selection[0].label;
-  // };
+  //거래 장소 모달 관리 함수
+  /** 거래 장소 모달 open/close 관리 함수 */
   const placeModalControl = () => {
     setModalOpen(!modalOpen);
     setPlaceVisible(!placeVisible);
   };
+  /** 거래 장소 모달 컴포넌트 */
   const PlaceModal = () => {
     return (
       <Modal
@@ -572,16 +557,14 @@ function AddScreen({ route, navigation }: AddScreenProps) {
     );
   };
 
-  /** 거래 장소 모달 관리 함수 */
-  // const showTrack = (selected: string) => {
-  //   const selection = tracks.filter((item) => item.value === selected);
-  //   return selection[0].label;
-  // };
+  //거래 트랙 관리 함수
+  /** 거래 트랙 모달 open/close 관리 함수 */
   const TrackPageControl = () => {
     setModalOpen(!modalOpen);
     setTrackVisible(!trackVisible);
   };
   const collegeList = [...new Set(tracks.map((item) => item.college))];
+  /** 트랙 목록 표시 함수 */
   const renderTrackList = (department: string) => {
     const trackList = [
       ...new Set(
@@ -611,6 +594,7 @@ function AddScreen({ route, navigation }: AddScreenProps) {
       />
     );
   };
+  /** 학부 목록 표시 함수 */
   const renderDepartmentList = (college: string) => {
     const departmentList = [
       ...new Set(
@@ -641,6 +625,7 @@ function AddScreen({ route, navigation }: AddScreenProps) {
       />
     );
   };
+  /** 단과대학 목록 표시 함수 */
   const renderCollege = () => {
     return (
       <FlatList
@@ -662,6 +647,7 @@ function AddScreen({ route, navigation }: AddScreenProps) {
       />
     );
   };
+  /** 거래 트랙 모달 컴포넌트 */
   const TrackPage = () => {
     return (
       <Modal
@@ -707,12 +693,13 @@ function AddScreen({ route, navigation }: AddScreenProps) {
     renderScreen();
   }, []);
 
+  /** 나눔 항목 체크시 0원으로 표시 or 체크 해제시 가격 표시 */
   useEffect(() => {
     free ? setPrice(0) : setPrice(board.price);
   }, [free]);
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> { /** 입력 가능한 컴포넌트 이외 클릭시 키보드 내리기 위함 */}
       <SafeAreaView style={styles.background}>
         <ImageModal />
         <CategoryModal />
