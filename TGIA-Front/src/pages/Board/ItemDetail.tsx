@@ -22,7 +22,6 @@ import { stackScrollInterpolator } from "../../utils/animations";
 import { ProgressBar } from "react-native-paper";
 import { places } from "../../assets/data/place";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import IonIcon from "react-native-vector-icons/Ionicons";
 import { Post } from "../../types/PostType";
 
 type RootStackParamList = {
@@ -107,15 +106,13 @@ function ItemDetail({ route, navigation }: ItemDetailProps) {
         console.log("취소 실패");
       });
   };
-
+  /** 본인 게시글에 달린 문의 채팅 목록 화면으로 이동하는 함수 */
   const toMyChat = useCallback(() => {
     navigation.navigate("ChatListFromPost", { post: board });
   }, [navigation]);
 
+  /** 타인의 게시글에 구매 문의하는 채팅 화면으로 이동하는 함수 */
   const toQuest = useCallback(() => {
-    /** Axios.get() 으로 api 접속해서 post_id, memberA, memberB 를 게시글의 post_id, writer, zustand에 저장된 id 로 검색해서
-     * 유무 판단해서 있으면 기존 채팅방을 리턴, 없으면 새로 채팅방 만들고 리턴 후 ChatDetail 로 이동
-     */
     const chatStartRequestDTO = {
       post_id: board.post_id,
       member_id: session?.member_id
@@ -132,11 +129,14 @@ function ItemDetail({ route, navigation }: ItemDetailProps) {
       .catch((error) => console.log(error));
   }, [board, chatroom, navigation]);
 
+  /** 카테고리 텍스트 클릭시 해당 카테고리 품목 검색한 결과 화면으로 이동하는 함수 */
   const categorySearch = () => {
     navigation.navigate("CategorySearch", { category: board.category });
   };
 
+  /** 페이지 첫 렌더링시 게시글 정보를 서버에서 받아와 표시하는 함수 */
   useEffect(() => {
+    // 게시글 상세 정보를 서버에서 받아와 표시
     Axios.get(
       `${url}/post/details3?postId=${board.post_id}&userId=${board.member_id}`
     )
@@ -162,11 +162,13 @@ function ItemDetail({ route, navigation }: ItemDetailProps) {
         }
       })
       .catch((error) => console.log(error));
+      // 게시글 작성자 이름을 서버에서 받아와 표시
     Axios.get(`${url}/member/get_username?id=${board.member_id}`)
       .then((res) => {
         setWriter(res.data);
       })
       .catch((err) => console.log(err));
+      // 게시글 작성자의 프로필 이미지를 서버에서 받아와 표시
     Axios.get(`${url}/member/get_image?member_id=${board.member_id}`)
       .then((res) => {
         setWriterImage(res.data);
@@ -174,6 +176,7 @@ function ItemDetail({ route, navigation }: ItemDetailProps) {
       .catch((error) => {
         console.log(error);
       });
+      // 게시글 작성자의 매너학점을 서버에서 받아와 표시
     Axios.get(`${url}/get_seller_profile?userId=` + board.member_id)
       .then((res) => {
         setManner(res.data.profileListDto.mannerscore);
@@ -181,11 +184,13 @@ function ItemDetail({ route, navigation }: ItemDetailProps) {
       .catch((error) => {
         console.log(error);
       });
+      // 찜 여부 확인하여 버튼 표시
     Axios.get(
       `${url}/profile/is_favorite?postId=${board.post_id}&userId=${session?.member_id}`
     )
       .then((res) => setIsFav(res.data === 1 ? true : false))
       .catch((err) => console.log(err));
+      // 게시글 작성자 프로필 1트랙을 서버에서 받아와 표시
     Axios.get(
         `${url}/member/getFirstTrack?member_id=${board.member_id}`
     )
@@ -200,6 +205,7 @@ function ItemDetail({ route, navigation }: ItemDetailProps) {
     };
   });
 
+  /** 게시글에 등록된 이미지를 가로로 스와이프해 넘겨보는 컴포넌트 */
   const renderCarouselItem = ({ item, index }) => {
     return (
       <Pressable onPress={() => setModalVisible(index)}>
@@ -214,6 +220,7 @@ function ItemDetail({ route, navigation }: ItemDetailProps) {
     setModalVisible(false);
   };
 
+  /** 몇번째 이미지인지 점으로 표시하는 컴포넌트 */
   const renderPagination = useCallback(() => {
     return (
       <Pagination
@@ -227,12 +234,14 @@ function ItemDetail({ route, navigation }: ItemDetailProps) {
     );
   }, [activeIndex]);
 
+  /** 게시글 작성자의 매너학점 정보(구매 후기 등) 페이지 이동 함수 */
   const toMannerInfo = () => {
     navigation.navigate("MannerInfo", {
       member_Id: board.member_id
     });
   };
 
+  /** 매너학점에 따라 A+부터 D0 까지 표시하는 함수 */
   useEffect(() => {
     if (manner >= 600) {
       setMannerGrade("A+");
@@ -251,14 +260,15 @@ function ItemDetail({ route, navigation }: ItemDetailProps) {
     }
   }, [manner]);
 
+  /** 게시글 작성자의 다른 게시글 목록 페이지로 이동하는 함수 */
   const toSalesList = () => {
     navigation.navigate("SalesList", {
       member_Id: board.member_id,
-      //profile_Img: profileImg,
       nickName: writer
     });
   };
 
+  /** 관련 상품 표시 컴포넌트 */
   const renderAssociatedItem = (item: Post, index: number) => {
     const toAssociatedItem = () => {
       navigation.push("Detail", { board: item });
