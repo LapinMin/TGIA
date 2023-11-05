@@ -14,9 +14,13 @@ type TryPaymentProps = NativeStackScreenProps<
   TryPaymentParamList,
   "TryPayment"
 >;
+
 const TryPaymentScreen = ({ route, navigation }: TryPaymentProps) => {
   const [paymentUrl, setPaymentUrl] = useState(route.params?.url);
+  /** 송금 성공 여부에 따라 이전 화면을 다르게 렌더링하기 위해 zustand에 저장하기 위한 state */
   const { paymentSuccess, setPaymentSuccess } = useStore();
+
+  /** 송금 시도 완료시 이전 화면으로 돌아가는 함수 */
   const handleNavigationStateChange = (navState) => {
     const { url } = navState;
     console.log(url);
