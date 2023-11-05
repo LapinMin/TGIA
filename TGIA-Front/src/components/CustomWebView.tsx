@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useStore } from "zustand";
 import { WebView, WebViewNavigation } from "react-native-webview";
 
 type CustomWebViewProps = {
@@ -10,7 +9,6 @@ type CustomWebViewProps = {
 const CustomWebView: React.FC<CustomWebViewProps> = ({
   url
 }: CustomWebViewProps) => {
-  const [viewUrl, setViewUrl] = useState(url);
   const handleShouldtStartLoadWithRequest = (e: WebViewNavigation) => {
     const { navigationType, url } = e;
 
