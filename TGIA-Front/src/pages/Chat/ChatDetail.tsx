@@ -12,7 +12,6 @@ import {
   Platform,
   KeyboardAvoidingView,
   Keyboard,
-  BackHandler,
   Alert
 } from "react-native";
 import { useState, useCallback, useEffect, useRef } from "react";
@@ -66,10 +65,12 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
 
   const Hansung = { latitude: 37.582429, longitude: 127.010084 };
 
+  /** 거래 요청 버튼 클릭시 함수 */
   const requestPayment = () => {
     sendApi(ChatApis[0].api);
   };
 
+  /** 거래 예약 버튼 클릭시 함수 */
   const reservation = () => {
     const post_id = {
       post_id: post.post_id
@@ -79,11 +80,13 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     });
   };
 
+  /** 송금하기 버튼 클릭시 카카오페이로 딥링크하는 페이지로 이동하는 함수 */
   const tryPayment = () => {
     stopChat();
     navigation.navigate("Payment", { post: post, chatroom: chatroom });
   };
 
+  /** 서버로부터 주기적으로 메시지 받아와 화면 갱신하는 함수 */
   const startChat = () => {
     getChats();
     const newTimerId = setInterval(() => {
@@ -92,11 +95,13 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     setTimerId(newTimerId);
   };
 
+  /** 서버로부터 메시지 갱신 중지하는 함수 */
   const stopChat = () => {
     timerId && clearInterval(timerId);
     setTimerId(null);
   };
 
+  /** 현재 위치 GPS상 위도, 경도 계산 함수 */
   const locationCalc = useCallback(() => {
     Geolocation.getCurrentPosition(
       (position) => {
@@ -116,6 +121,7 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     );
   }, []);
 
+  /** 위도, 경도가 한성대학교 상상관 기준 교내 위치인지 판단하는 함수 */
   const distanceCalc = (
     HansungLat: number,
     HansungLon: number,
@@ -142,6 +148,7 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     } else setInHansung(false);
   };
 
+  /** 위치 전송 여부 확인 함수 */
   const checkCalc = () => {
     Alert.alert(
       "위치 전송",
@@ -177,6 +184,7 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     );
   };
 
+  /** 이전 화면으로 이동할 때 채팅 중지 후 이전 화면으로 돌아가는 함수 */
   const backward = () => {
     stopChat();
     // navigation.goBack();
@@ -190,6 +198,7 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     }
   };
 
+  /** 서버로부터 받아온 채팅 데이터로 메시지 렌더링하는 함수 */
   const renderChat = ({ item }) => {
     const previousList = chats.filter(
       (msg) =>
@@ -209,10 +218,12 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     );
   };
 
+  /** 메시지 입력창 클릭시 스크롤 최하단으로 이동하는 함수 */
   const handleScrollToEnd = () => {
     chatRef.current?.scrollToEnd({ animated: true });
   };
 
+  /** 송금하기, 송금요청, 거래예약, 위치전송 버튼 클릭시 api 전송 함수 */
   const sendApi = (api: string) => {
     const SendMessageRequestDTO = {
       chatroom_id: chatroom.chatroom_id,
@@ -232,6 +243,7 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     setMsg("");
   };
 
+  /** 텍스트 전송 함수 */
   const sendMessage = () => {
     const SendMessageRequestDTO = {
       chatroom_id: chatroom.chatroom_id,
@@ -251,6 +263,7 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     setMsg("");
   };
 
+  /** 서버로부터 메시지 받아오는 함수 */
   const getChats = () => {
     if (isChatLoaded) {
       Axios.get(`${url}/chat/get_chat_message_list`, {
@@ -268,6 +281,7 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     }
   };
 
+  /** 추가기능 메뉴 닫는 함수 */
   const menuClosed = () => {
     return (
       <View
@@ -326,6 +340,7 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     );
   };
 
+  /** 추가기능 메뉴 여는 함수 */
   const menuOpened = () => {
     return (
       <View
@@ -450,6 +465,7 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     );
   };
 
+  /** 현재 화면이 채팅 화면일 경우 메시지 갱신, 아닐 경우 갱신 중지 */
   useEffect(() => {
     if (isFocused) {
       startChat();
@@ -458,6 +474,7 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     }
   }, [isFocused]);
 
+  /** 처음 채팅 화면 렌더링 함수 */
   useEffect(() => {
     Axios.get(
       `${url}/chat/get_chat_members?chatroom_id=${chatroom.chatroom_id}`
@@ -474,21 +491,13 @@ function ChatDetail({ route, navigation }: ChatDetailProps) {
     const keyDownListener = Keyboard.addListener("keyboardWillHide", (e) =>
       setKeyHeight(0)
     );
-    // const backListener = BackHandler.addEventListener(
-    //   "hardwareBackPress",
-    //   () => {
-    //     stopChat();
-    //     return false;
-    //   }
-    // );
-    // return () => backListener.remove();
     navigation.addListener("beforeRemove", (e) => {
       stopChat();
     });
   }, []);
 
+  /** 서버로부터 상대방 이름 받아와 설정하는 함수 */
   useEffect(() => {
-    console.log(other);
     Axios.get(`${url}/member/get_username?id=${other}`)
       .then((res) => {
         setOtherName(res.data);
