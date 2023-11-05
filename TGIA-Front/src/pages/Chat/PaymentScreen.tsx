@@ -19,6 +19,7 @@ const { width: vw, height: vh } = Dimensions.get("window");
 type PaymentPramList = {
   Payment: undefined;
 };
+
 type PaymentProps = NativeStackScreenProps<PaymentPramList, "Payment">;
 
 function PaymentScreen({ route, navigation }: PaymentProps) {
@@ -26,6 +27,7 @@ function PaymentScreen({ route, navigation }: PaymentProps) {
   const chatroom = route.params?.chatroom;
   const { session, url, paymentSuccess, setPaymentSuccess } = useStore();
 
+  /** 서버에 전송할 게시글 정보 */
   const kakaoPayDto = {
     post_id: post.post_id,
     user_id: post.member_id,
@@ -34,6 +36,7 @@ function PaymentScreen({ route, navigation }: PaymentProps) {
     item_name: post.item_name
   };
 
+  /** 채팅 화면으로 돌아가는 함수 */
   const toChat = () => {
     if (paymentSuccess) {
       const SendMessageRequestDTO = {
@@ -54,6 +57,7 @@ function PaymentScreen({ route, navigation }: PaymentProps) {
     }
   };
 
+  /** 송금 시도 화면으로 이동하는 함수 */
   const tryPayment = () => {
     Axios.post(`${url}/payment/ready`, kakaoPayDto)
       .then((res) => {
