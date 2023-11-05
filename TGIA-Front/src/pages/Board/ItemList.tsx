@@ -29,10 +29,12 @@ function ItemList({ board, navigation }: itemListProps) {
   const [isFav, setIsFav] = useState(0); // 좋아요 정보. 0 : 좋아요 off, 1 : 좋아요 on
   const isFocused = useIsFocused();
 
+  /** 게시글 상세 화면으로 이동하는 함수 */
   const toDetail = () => {
     navigation.navigate("Detail", { board: board, isFav: isFav });
   };
 
+  /** 찜 여부 표시 함수 */
   const favorite = () => {
     Axios.get(`${url}/profile/is_favorite`, {
       params: { postId: board.post_id, userId: session?.member_id }
@@ -43,6 +45,7 @@ function ItemList({ board, navigation }: itemListProps) {
       .catch((error) => {});
   };
 
+  /** 게시글 작성 시간에 따른 텍스트 표시 함수 */
   const timeCalc = () => {
     const now = new moment();
     const date = new moment(board.createdDate);
