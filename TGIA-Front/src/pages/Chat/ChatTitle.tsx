@@ -1,12 +1,9 @@
 import * as React from "react";
 import {
-  SafeAreaView,
-  ScrollView,
   View,
   Text,
   Pressable,
   Dimensions,
-  PixelRatio,
   Image
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -15,9 +12,11 @@ import Axios from "axios";
 import { ChatApis } from "./ChatApis";
 import useStore from "../../../store";
 import { useIsFocused } from "@react-navigation/native";
+
 type RootStackParamList = {
   ChatTitle: undefined;
 };
+
 type ChatTitleProps = NativeStackScreenProps<RootStackParamList, "ChatTitle">;
 
 const vw = Dimensions.get("window").width;
@@ -35,6 +34,7 @@ function ChatTitle({ chat, navigation }: ChatTitleProps) {
   const [otherImg, setOtherImg] = useState();
   const count = chat.count;
 
+  /** 직전 메시지가 api 호출 이미지 메시지였다면 그에 맞는 텍스트로 변환하여 표시 */
   const convertMessage = () => {
     switch (latestMsg) {
       case ChatApis[0].api:
@@ -50,6 +50,7 @@ function ChatTitle({ chat, navigation }: ChatTitleProps) {
     }
   };
 
+  /** 채팅 화면으로 이동하는 함수 */
   const toChatDetail = () => {
     navigation.navigate("ChatDetail", {
       chatroom: chat,
@@ -57,6 +58,7 @@ function ChatTitle({ chat, navigation }: ChatTitleProps) {
     });
   };
 
+  /** 화면이 포커스 받을 경우 화면 갱신하는 함수 */
   useEffect(() => {
     Axios.get(`${url}/chat/get_username?id=${otherId}`)
       .then((res) => {
