@@ -25,20 +25,13 @@ type HomeScreenProps = NativeStackScreenProps<RootStackParamList, "Home">;
 const vw = Dimensions.get("window").width;
 const vh = Dimensions.get("window").height;
 
-const saveSession = async (data: string) => {
-  try {
-    await AsyncStorage.setItem("session", data);
-  } catch (e) {}
-};
-
 function HomeScreen({ navigation }: HomeScreenProps) {
   const [loginId, setLoginId] = useState("");
-  const { session, setSession, url } = useStore();
+  const { setSession, url } = useStore();
 
   const LogIn = () => {
     Axios.get(`${url}/member/get?user_id=${loginId}`)
       .then((res) => {
-        console.log(res.data);
         const firstTrack = res.data.firsttrack;
         const secondTrack = res.data.secondtrack;
         const firstDepart = tracks.find(
@@ -68,12 +61,6 @@ function HomeScreen({ navigation }: HomeScreenProps) {
       .catch((error) => console.log(error));
   };
 
-  const test = () => {
-    AsyncStorage.removeItem("session").then((res) => {
-      console.log(AsyncStorage.getItem("session"));
-    });
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -89,7 +76,7 @@ function HomeScreen({ navigation }: HomeScreenProps) {
           <TextInput secureTextEntry={true} style={styles.passwordInput} />
         </View>
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.registerButton} onPress={test}>
+          <TouchableOpacity style={styles.registerButton}>
             <Text style={{ color: "white", fontWeight: "700", fontSize: 15 }}>
               회원가입
             </Text>
