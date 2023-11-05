@@ -30,6 +30,7 @@ import OctIcon from "react-native-vector-icons/Octicons";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Post } from "../../types/PostType";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 type RootStackParamList = {
   List: undefined;
 };
@@ -45,23 +46,11 @@ function ListScreen({ route, navigation }: ListScreenProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const { session, url, rangeValue, setRangeValue } = useStore();
-  const [posts, setPosts] = useState<Array<Post>>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const isFocused = useIsFocused();
-  const filterList = [
-    { label: "전체보기", value: "all" },
-    { label: "도서", value: "book" },
-    { label: "필기구", value: "pencil" },
-    { label: "생활/가전", value: "life" },
-    { label: "의류", value: "clothes" },
-    { label: "뷰티/미용", value: "beauty" },
-    { label: "전자기기", value: "digital" },
-    { label: "부기굿즈", value: "goods" }
-  ];
-  const [filter, setFilter] = useState(filterList[0]);
   const [newPosts, setNewPosts] = useState<Array<Post>>([]);
 
-  /** */
+  /** 게시글 정렬 기준을 체크하기 위한 state 목록 */
   const [isNewChecked, setIsNewChecked] = useState(true);
   const [isOldChecked, setIsOldChecked] = useState(false);
   const [isMuchChecked, setIsMuchChecked] = useState(false);
@@ -80,6 +69,8 @@ function ListScreen({ route, navigation }: ListScreenProps) {
   const [rangeBackOpacity, setRangeBackOpacity] = useState(0.0);
   const [rangeBackZIndex, setRangeBackZIndex] = useState(-50);
   const [rangeWidth, setRangeWidth] = useState(0);
+
+  /** 게시글 정렬 모달 open 애니메이션 함수 */
   const modalOpenAnimation = () => {
     LayoutAnimation.configureNext({
       duration: 150,
@@ -90,12 +81,14 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     setModalTop(0);
   };
 
+  /** 게시글 정렬 모달 open 함수 */
   const filterModalOpen = () => {
     setModalBackOpacity(0.2);
     setModalBackZIndex(50);
     modalOpenAnimation();
   };
 
+  /** 게시글 정렬 모달 close 애니메이션 함수 */
   const modalCloseAnimation = () => {
     LayoutAnimation.configureNext({
       duration: 150,
@@ -106,6 +99,7 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     setModalTop(-vh / 2.3);
   };
 
+  /** 게시글 정렬 모달 close 함수 */
   const filterModalClose = () => {
     setModalBackOpacity(0);
     setModalBackZIndex(-50);
@@ -136,6 +130,7 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     setCurrentChecked("low");
   };
 
+  /** 체크한 정렬 기준에 따라 게시글 목록 정렬하는 함수 */
   const adjustFilter = (checked: string) => {
     switch (checked) {
       case "new":
@@ -173,6 +168,7 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     filterModalClose();
   };
 
+  /** 게시글 정렬 모달에서 취소 버튼 클릭 함수 */
   const cancelFilter = (checked: string) => {
     switch (checked) {
       case "new":
@@ -213,6 +209,7 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     filterModalClose();
   };
 
+  /** currentChecked 가 변경될 때마다 다른 체크박스 해제하고 리렌더링하는 함수 */
   useEffect(() => {
     switch (currentChecked) {
       case "new":
@@ -266,15 +263,17 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     }
   }, [currentChecked]);
 
-  /** */
+  /** 게시글 작성 화면으로 이동하는 함수 */
   const writePost = useCallback(() => {
     navigation.navigate("Add");
   }, [navigation]);
 
+  /** 서버에서 받아온 게시글 목록을 타일별로 표시하는 함수 */
   const renderItem = (item: Post) => {
     return <ItemList board={item} navigation={navigation} />;
   };
 
+  /** ListScreen 처음 렌더링시 페이징된 데이터를 표시하는 함수 */
   const loadFirstPage = () => {
     console.log("loadFirstPage");
     if(!isLoading) {
@@ -312,6 +311,7 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     }
   };
 
+  /** 화면이 아래로 내려와 추가적인 게시글을 서버에서 받아왔을 때 추가 렌더링하는 함수 */
   const loadPage = () => {
     if (!isLoading) {
       setIsLoading(true);
@@ -334,6 +334,7 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     }
   }, [isFocused]);
 
+  /** 게시글 정렬 모달 컴포넌트 */
   const FilterModal = () => {
     return (
       <View style={filterModalStyles.modalContainer}>
@@ -488,6 +489,7 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     );
   };
 
+  /** 학부 소속에 따른 게시글 필터링 범위 모달 open animation 함수 */
   const rangeModalOpenAnimation = () => {
     LayoutAnimation.configureNext({
       duration: 150,
@@ -499,12 +501,14 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     setRangeModalTop(0);
   };
 
+  /** 학부 소속에 따른 게시글 필터링 범위 모달 open 함수 */
   const rangeModalOpen = () => {
     setRangeBackOpacity(0.2);
     setRangeBackZIndex(50);
     rangeModalOpenAnimation();
   };
 
+  /** 학부 소속에 따른 게시글 필터링 범위 모달 close animation 함수 */
   const rangeModalCloseAnimation = () => {
     LayoutAnimation.configureNext({
       duration: 150,
@@ -516,19 +520,22 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     setRangeModalTop(-vh / 2.3);
   };
 
+  /** 학부 소속에 따른 게시글 필터링 범위 모달 close 함수 */
   const rangeModalClose = () => {
     setRangeBackOpacity(0.0);
     setRangeBackZIndex(-50);
     rangeModalCloseAnimation();
   };
 
-  // const [rangeValue, setRangeValue] = useState(4);
+  /** 게시글 필터링 범위 표시하는 원형 버튼 위치 관련 state */
   const [rangeAnimatedValue, setRangeAnimatedValue] = useState(
     new Animated.Value(55)
   );
+  /** 게시글 필터링 범위 표시하는 배경선 관련 state */
   const [rangeAnimatedWidth, setRangeAnimatedWidth] = useState(
     new Animated.Value((3 * rangeWidth) / 3.0)
   );
+  /** 원형 버튼 위치가 어느 범위인지 표시하는 텍스트 */
   const getRangeCategory = (value) => {
     switch (value) {
       case 1:
@@ -541,10 +548,12 @@ function ListScreen({ route, navigation }: ListScreenProps) {
         return "전체";
     }
   };
+
   const [rangeCategory, setRangeCategory] = useState(
     getRangeCategory(rangeValue)
   );
 
+  /** 선택한 게시글 범위에 맞춘 본인 학부 텍스트 */
   const getRange = (isFirst: boolean, value: number) => {
     switch (value) {
       case 1:
@@ -558,6 +567,8 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     }
   };
   const [rangeText, setRangeText] = useState(getRangeCategory(rangeValue));
+
+  /** 원형 버튼 이동 애니메이션 */
   const moveAnimation = (index: number) => {
     Animated.timing(rangeAnimatedValue, {
       toValue: 55 + (((index - 1) / 1) * rangeWidth) / 3.0,
@@ -565,6 +576,8 @@ function ListScreen({ route, navigation }: ListScreenProps) {
       useNativeDriver: false
     }).start();
   };
+
+  /** 범위에 따른 막대 채색 범위 이동 애니메이션 */
   const moveWidthAnimation = (index: number) => {
     Animated.timing(rangeAnimatedWidth, {
       toValue: (((index - 1) / 1) * rangeWidth) / 3.0,
@@ -572,6 +585,8 @@ function ListScreen({ route, navigation }: ListScreenProps) {
       useNativeDriver: false
     }).start();
   };
+
+  /** 범위 변경에 따른 전체적인 이동 애니메이션 */
   const moveRange = (index: number) => {
     setRangeValue(index);
     moveAnimation(index);
@@ -579,6 +594,8 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     setRangeText(getRange(currentSelected, index));
     setWhichTrack(currentSelected);
   };
+
+  /** 게시글 범위 필터링 모달에서 적용하기 버튼 클릭시 게시글 목록 리렌더링 함수 */
   const adjustRange = () => {
     setRangeCategory(getRangeCategory(rangeValue));
     if (rangeValue === 4) {
@@ -598,6 +615,7 @@ function ListScreen({ route, navigation }: ListScreenProps) {
     }
     rangeModalClose();
   };
+  /** 게시글 범위 필터링 모달에서 초기화 버튼 클릭시 게시글 목록 리렌더링 함수 */
   const resetRange = () => {
     setRangeCategory(getRangeCategory(4));
     setRangeText(getRange(true, 4));
@@ -608,7 +626,6 @@ function ListScreen({ route, navigation }: ListScreenProps) {
         res.data.sort((a: Post, b: Post) =>
           moment(b.createdDate).diff(moment(a.createdDate))
         );
-        setPosts(res.data);
         setNewPosts(res.data);
       })
       .catch((error) => {
@@ -616,6 +633,7 @@ function ListScreen({ route, navigation }: ListScreenProps) {
       });
     rangeModalClose();
   };
+  /** 게시글 범위 필터링 모달 배경 클릭하여 선택하지 않고 모달 닫을 시 함수 */
   const cancelRange = () => {
     switch (rangeCategory) {
       case "트랙":
@@ -641,6 +659,8 @@ function ListScreen({ route, navigation }: ListScreenProps) {
   /** currentSelected: 1트랙 검색인지 2트랙 검색인지 => true면 1트랙, false면 2트랙 */
   const [whichTrack, setWhichTrack] = useState(true);
   const [currentSelected, setCurrentSelected] = useState(whichTrack);
+  
+  /** 게시글 범위 필터링 모달 컴포넌트 */
   const RangeModal = () => {
     return (
       <View style={rangeModalStyles.modalContainer}>
