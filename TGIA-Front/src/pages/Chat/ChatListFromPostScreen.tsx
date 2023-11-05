@@ -3,17 +3,10 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useState, useEffect } from "react";
 import {
   SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
   Text,
   View,
-  TouchableOpacity,
-  TextInput,
   Dimensions,
-  Alert,
   FlatList,
-  Image,
   Pressable
 } from "react-native";
 import ChatTitle from "./ChatTitle";
@@ -24,6 +17,7 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 type RootStackParamList = {
   ChatListFromPost: undefined;
 };
+
 type ChatListFromPostScreenProps = NativeStackScreenProps<
   RootStackParamList,
   "ChatListFromPost"
@@ -39,14 +33,16 @@ function ChatListFromPostScreen({
   const post = route.params?.post;
   const [chats, setChats] = useState([]);
   const { session, url } = useStore();
+  /** 채팅 목록 렌더링하는 함수 */
   const renderItem = ({ item }) => {
     return <ChatTitle chat={item} navigation={navigation} />;
   };
-
+  /** 게시글 상세 화면으로 돌아가는 함수 */
   const backToPost = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
+  /** 서버로부터 문의 채팅방 목록 받아와 렌더링하는 함수 */
   useEffect(() => {
     Axios.get(`${url}/chat/get_chat_room_list`, {
       params: {
