@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Dimensions,
   PixelRatio,
-  Platform,
   Image
 } from "react-native";
 import { ChatApis } from "./ChatApis";
@@ -41,8 +40,10 @@ function ChatBubble(chat: chat) {
         });
     }
   }, []);
+  
+  // 내가 보낸 메시지일 경우
   if (my_id === sender) {
-    if (chat.message === ChatApis[0].api) {
+    if (chat.message === ChatApis[0].api) { // 거래 요청 이미지 표시
       return (
         <View style={styles.myBubbleArea}>
           <View style={styles.myBubbleTimeArea}>
@@ -54,7 +55,7 @@ function ChatBubble(chat: chat) {
         </View>
       );
     }
-    if (chat.message === ChatApis[1].api) {
+    if (chat.message === ChatApis[1].api) { // 송금 완료 이미지 표시
       return (
         <View style={styles.myBubbleArea}>
           <View style={styles.myBubbleTimeArea}>
@@ -66,7 +67,7 @@ function ChatBubble(chat: chat) {
         </View>
       );
     }
-    if (chat.message === ChatApis[2].api) {
+    if (chat.message === ChatApis[2].api) { // 거래 예약 이미지 표시
       return (
         <View style={styles.myBubbleArea}>
           <View style={styles.myBubbleTimeArea}>
@@ -78,7 +79,7 @@ function ChatBubble(chat: chat) {
         </View>
       );
     }
-    if (chat.message === ChatApis[3].api) {
+    if (chat.message === ChatApis[3].api) { // 위치 전송 이미지 표시
       return (
         <View style={styles.myBubbleArea}>
           <View style={styles.myBubbleTimeArea}>
@@ -90,6 +91,7 @@ function ChatBubble(chat: chat) {
         </View>
       );
     }
+    // 일반 메시지일 경우
     return (
       <View style={styles.myBubbleArea}>
         <View style={styles.myBubbleTimeArea}>
@@ -100,8 +102,8 @@ function ChatBubble(chat: chat) {
         </View>
       </View>
     );
-  } else {
-    if (chat.message === ChatApis[0].api) {
+  } else { // 상대방이 보낸 메시지일 경우
+    if (chat.message === ChatApis[0].api) { // 송금 요청 이미지 표시
       return (
         <View style={styles.otherApiBox}>
           <View style={{ flexDirection: "row", marginBottom: 5 }}>
@@ -119,7 +121,7 @@ function ChatBubble(chat: chat) {
         </View>
       );
     }
-    if (chat.message === ChatApis[1].api) {
+    if (chat.message === ChatApis[1].api) { // 송금 완료 이미지 표시
       return (
         <View style={styles.otherApiBox}>
           <View style={{ flexDirection: "row", marginBottom: 5 }}>
@@ -137,7 +139,7 @@ function ChatBubble(chat: chat) {
         </View>
       );
     }
-    if (chat.message === ChatApis[2].api) {
+    if (chat.message === ChatApis[2].api) { // 거래 예약 이미지 표시
       return (
         <View style={styles.otherApiBox}>
           <View style={{ flexDirection: "row", marginBottom: 5 }}>
@@ -155,7 +157,7 @@ function ChatBubble(chat: chat) {
         </View>
       );
     }
-    if (chat.message === ChatApis[3].api) {
+    if (chat.message === ChatApis[3].api) { // 위치 전송 이미지 표시
       return (
         <View style={styles.otherApiBox}>
           <View style={{ flexDirection: "row", marginBottom: 5 }}>
@@ -173,7 +175,8 @@ function ChatBubble(chat: chat) {
         </View>
       );
     }
-    if (previous !== sender) {
+    // 일반 메시지일 경우
+    if (previous !== sender) { // 직전에 상대방이 메시지를 보냈을 경우, 닉네임 표시
       return (
         <View
           style={{
@@ -198,7 +201,7 @@ function ChatBubble(chat: chat) {
           </View>
         </View>
       );
-    } else {
+    } else { // 직전에 본인이 메시지를 보냈을 경우, 닉네임 표시 x 
       return (
         <View style={styles.otherBubbleArea}>
           <View style={styles.otherBubbleBox}>
