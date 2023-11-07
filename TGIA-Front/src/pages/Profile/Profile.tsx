@@ -39,6 +39,7 @@ function Profile({ navigation, route }: ProfileScreenProps) {
   const isFocused = useIsFocused();
   const [profileImg, setProfileImg] = useState();
 
+  /** 본인이 판매하고 있는 게시글 목록과 매너학점 정보들을 서버에서 받아와 적용하는 함수 */
   useEffect(() => {
     Axios.get(`${url}/get_seller_profile?userId=` + session?.member_id)
       .then((res) => {
@@ -51,6 +52,7 @@ function Profile({ navigation, route }: ProfileScreenProps) {
       });
   }, []);
 
+  /** 매너 점수에 따라 학점(A+ ~ D0) 매핑 함수 */
   useEffect(() => {
     if (manner >= 600) {
       setMannerGrade("A+");
@@ -69,10 +71,7 @@ function Profile({ navigation, route }: ProfileScreenProps) {
     }
   }, [manner]);
 
-  const onSubmit = useCallback(() => {
-    Alert.alert("알림", "ㅎㅇ");
-  }, []);
-
+  /** 매너학점 정보 화면으로 이동 함수 */
   const toMannerInfo = () => {
     navigation.navigate("MannerInfo", {
       member_Id: session.member_id
@@ -84,36 +83,49 @@ function Profile({ navigation, route }: ProfileScreenProps) {
     setTrackSecond(session?.secondTrack);
   }, [isFocused]);
 
+  /** 트랙 설정 화면으로 이동하는 함수 */
   const toTrackSetting = (number: number) => {
     navigation.navigate("TrackSetting", { number: number });
   };
 
+  /** 판매 내역으로 이동하는 함수 */
   const toSalesHistory = () => {
     navigation.navigate("SalesHistory", {
       profile_img: profileImg
     });
   };
 
+  /** 구매 내역으로 이동하는 함수 */
   const toPurchaseHistory = useCallback(() => {
     navigation.navigate("PurchaseHistory");
   }, [navigation]);
+
+  /** 찜목록으로 이동하는 함수 */
   const toFav = useCallback(() => {
     navigation.navigate("Fav");
   }, [navigation]);
+
+  /** 프로필 변경으로 이동하는 함수 */
   const toChangeProfile = () => {
     navigation.navigate("ChangeProfile", {
       member_id: session.member_id,
       profile_img: profileImg
     });
   };
+
+  /** 설정 화면으로 이동하는 함수 */
   const toSettings = useCallback(() => {
     navigation.navigate("Settings");
   }, [navigation]);
+
+  /** 로그아웃 함수 */
   const logout = useCallback(() => {
     AsyncStorage.removeItem("session").then((res) => {
       navigation.reset({ routes: [{ name: "Home" }] });
     });
   }, [navigation]);
+
+  /** 로그아웃 재확인 함수, 예 클릭시 로그아웃 후 로그인 화면으로 이동 */
   const logoutAlert = () => {
     Alert.alert("로그아웃", "로그아웃 하시겠습니까?", [
       { text: "아니요", style: "cancel" },

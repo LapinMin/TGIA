@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ function MannerReviewList({ navigation, route }: MannerReviewListScreenProps) {
   const [memberId, setMemberId] = useState(route.params.member_Id); // 받아온 멤버 아이디
   const [purchaseReviews, setPurchaseReviews] = useState([]); // 구매자 리뷰 내용
 
+  /** 이전 화면으로 돌아가는 함수 */
   const goBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
@@ -43,6 +44,7 @@ function MannerReviewList({ navigation, route }: MannerReviewListScreenProps) {
       });
   }, []);
 
+  /** 판매 후기 클릭시 상대 프로필로 이동하는 함수 */
   const renderPurchaseReviews = () => {
     const toOtherProfile = (buyerId) => {
       navigation.push("MannerInfo", {
