@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, } from "react";
 import {
   SafeAreaView,
   Dimensions,
@@ -6,8 +6,6 @@ import {
   View,
   Text,
   Pressable,
-  Image,
-  Alert,
   TouchableOpacity,
   FlatList,
   Platform
@@ -34,10 +32,12 @@ function PurchaseHistory({ navigation }: PurchaseHistoryScreenProps) {
   const isFocused = useIsFocused();
   const [posts, setPosts] = useState([]);
 
+  /** 프로필로 돌아가는 함수 */
   const toProfile = useCallback(() => {
     navigation.navigate("Profile");
   }, [navigation]);
 
+  /** 구매 내역 물품 렌더링 함수 */
   const renderItem = ({ item }) => {
     const toReview = () => {
       navigation.navigate("MannerReview", {

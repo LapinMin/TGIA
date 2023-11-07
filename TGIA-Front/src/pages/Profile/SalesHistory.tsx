@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -35,14 +35,14 @@ function SalesHistory({ navigation, route }: ChangeProfileScreenProps) {
   const [content, setContent] = useState(0);
   const position = new Animated.Value(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [posts, setPosts] = useState<Array<Post>>([]);
   const [sellingPosts, setSellingPosts] = useState<Array<Post>>([]);
   const [completedPosts, setCompletedPosts] = useState<Array<Post>>([]);
   const [profileImg, setProfileImg] = useState();
-  const [img, setImg] = useState({});
   const [topBarHeight, setTopBarHeight] = useState(0);
   const [topZoneHeight, setTopZoneHeight] = useState(0);
   const [typeZoneHeight, setTypeZoneHeight] = useState(0);
+
+  /** 서버로부터 판매 내역 목록 정보 받아와 적용하는 함수 */
   useEffect(() => {
     Axios.get(`${url}/post/my_list?userId=` + session?.member_id)
       .then((res) => {
@@ -60,6 +60,7 @@ function SalesHistory({ navigation, route }: ChangeProfileScreenProps) {
       .catch((err) => console.log(err));
   }, []);
 
+  /** 판매중, 판매완료 영역을 세그먼트 형식으로 이동하는 애니메이션 함수 */
   const tabUnderline = (tabNum: number) => {
     Animated.spring(position, {
       toValue: tabNum === 0 ? 0 : 1,
@@ -67,19 +68,17 @@ function SalesHistory({ navigation, route }: ChangeProfileScreenProps) {
     }).start();
   };
 
+  /** 프로필로 돌아가는 함수 */
   const toProfile = useCallback(() => {
     navigation.navigate("Profile");
   }, [navigation]);
 
+  /** 새 게시글 등록 화면으로 이동하는 함수 */
   const toWrite = useCallback(() => {
     navigation.navigate("Add");
   }, [navigation]);
 
-  const onSubmit = useCallback(() => {
-    Alert.alert("알림", "ㅎㅇ");
-    console.log(profileImg);
-  }, []);
-
+  /** 판매 내역 물품 렌더링 함수 */
   const renderItem = ({ item }) => {
     const renderBoard = {
       post_id: item.post_id,
@@ -103,6 +102,7 @@ function SalesHistory({ navigation, route }: ChangeProfileScreenProps) {
     return <ItemList board={renderBoard} navigation={navigation} />;
   };
 
+  /** 판매중 탭 렌더링 함수 */
   function OnSale() {
     tabUnderline(0);
 
@@ -131,6 +131,7 @@ function SalesHistory({ navigation, route }: ChangeProfileScreenProps) {
     );
   }
 
+  /** 판매완료 탭 렌더링 함수 */
   function Completed() {
     tabUnderline(1);
     return (
