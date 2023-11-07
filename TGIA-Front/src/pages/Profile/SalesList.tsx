@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -31,10 +31,12 @@ function SalesList({ navigation, route }: SalesListScreenProps) {
   const [img, setImg] = useState({});
   const [posts, setPosts] = useState([]);
 
+  /** 뒤로 가기 함수 */
   const goBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
+  /** 판매 목록 렌더링 함수 */
   const renderItem = ({ item }) => {
     const renderBoard = {
       post_id: item.post_id,

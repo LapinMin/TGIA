@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
-import LocationCalc from "../../components/LocationCalc";
 import useStore from "../../../store";
 import IonIcon from "react-native-vector-icons/Ionicons";
 
@@ -22,8 +21,7 @@ type SettingsScreenProps = NativeStackScreenProps<
 >;
 
 function Settings({ navigation }: SettingsScreenProps) {
-  const { session, url } = useStore();
-
+  /** 뒤로 가기 함수 */
   const goBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
