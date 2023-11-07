@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -35,11 +35,13 @@ function TrackSetting({ navigation, route }: TrackSettingScreenProps) {
   const whichTrack = params?.number;
   const collegeList = [...new Set(tracks.map((item) => item.college))];
 
+  /** 트랙 변경 관련 서버와의 통신 실패시 알림창 생성 함수 */
   const alertError = (number) => {
     Alert.alert(`트랙 변경 실패 ${number}`, "잠시 후 다시 시도하십시오"),
       [{ text: "확인", style: "cancel" }];
   };
 
+  /** 1, 2 트랙 동일 트랙 선택 여부 확인하여 이상 없을 경우 서버로 변경할 트랙 정보 전달하는 함수 */
   const sendTrack = () => {
     if (trackMenu === session?.firstTrack) {
       Alert.alert("입력 오류", `${trackMenu}는 현재 1트랙입니다.`, [
@@ -107,6 +109,7 @@ function TrackSetting({ navigation, route }: TrackSettingScreenProps) {
     }
   };
 
+  /** before & after 재확인 함수 */
   const adjustPressed = () => {
     Alert.alert(
       "트랙 변경",
@@ -118,6 +121,7 @@ function TrackSetting({ navigation, route }: TrackSettingScreenProps) {
     );
   };
 
+  /** 트랙 목록 렌더링 함수, 학부 클릭시 해당 학부 내 트랙을 목록으로 렌더링 */
   const renderTrack = (depart: string) => {
     const trackList = [
       ...new Set(
@@ -158,6 +162,7 @@ function TrackSetting({ navigation, route }: TrackSettingScreenProps) {
     );
   };
 
+  /** 학부 목록 렌더링 함수, 단과대학 클릭시 해당 단과대 내 학부 목록 렌더링 */
   const renderDepart = (college: string) => {
     const departmentList = [
       ...new Set(
@@ -190,6 +195,7 @@ function TrackSetting({ navigation, route }: TrackSettingScreenProps) {
     );
   };
 
+  /** 단과대 목록 렌더링 함수 */
   const renderCollege = () => {
     return (
       <FlatList
@@ -216,6 +222,7 @@ function TrackSetting({ navigation, route }: TrackSettingScreenProps) {
     );
   };
 
+  /** 프로필로 돌아가는 함수 */
   const toProfile = useCallback(() => {
     navigation.navigate("Profile");
   }, [navigation]);

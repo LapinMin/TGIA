@@ -2,7 +2,6 @@ import {
   SafeAreaView,
   View,
   Text,
-  FlatList,
   Dimensions,
   StyleSheet,
   TextInput,
@@ -11,7 +10,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import * as React from "react";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import useStore from "../../../store";
 import BottomTabs from "../../components/BottomTabs";
