@@ -31,7 +31,6 @@ function MannerInfo({ navigation, route }: MannerInfoProps) {
   const [memberId, setMemberId] = useState(route.params.member_Id); // 받아온 멤버 아이디
   const [nickName, setNickName] = useState(); // 유저 닉네임
   const [profileImg, setProfileImg] = useState(); // 프로필 이미지
-  const [img, setImg] = useState({});
   const [trackFirst, setTrackFirst] = useState(session?.firstTrack); // 제 1트랙
   const [trackSecond, setTrackSecond] = useState(session?.secondTrack); // 제 2트랙
   const [manner, setManner] = useState(330); // 매너 학점
@@ -45,10 +44,12 @@ function MannerInfo({ navigation, route }: MannerInfoProps) {
   const [purchaseReviews, setPurchaseReviews] = useState([]); // 구매자 리뷰 내용
   const isFocused = useIsFocused();
 
+  /** 재거래 희망률 갱신 함수 */
   function updateReDealingRate(data) {
     const reDealingRateValue = data.find((item) =>
       item.hasOwnProperty("reDealingRate")
     );
+    /** reDealingRateValue가 null 이 아닐 경우 */
     if (reDealingRateValue) {
       setReDealingRate(reDealingRateValue.reDealingRate);
     }
@@ -90,6 +91,7 @@ function MannerInfo({ navigation, route }: MannerInfoProps) {
       });
   }, [isFocused]);
 
+  /** 매너점수에 따라 학점(A+ ~ D0) 매핑 함수 */
   useEffect(() => {
     if (manner >= 600) {
       setMannerGrade("A+");
@@ -108,10 +110,12 @@ function MannerInfo({ navigation, route }: MannerInfoProps) {
     }
   }, [manner]);
 
+  /** 뒤로 가기 함수 */
   const goBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
+  /** 해당 유저의 판매 목록으로 이동하는 함수 */
   const toSalesList = () => {
     navigation.navigate("SalesList", {
       member_Id: memberId,
@@ -120,12 +124,14 @@ function MannerInfo({ navigation, route }: MannerInfoProps) {
     });
   };
 
+  /** 구매 후기 목록으로 이동하는 함수 */
   const toMannerReviewList = useCallback(() => {
     navigation.navigate("MannerReviewList", {
       member_Id: memberId
     });
   }, []);
 
+  /** 구매 후기로 이동하는 함수 */
   const renderPurchaseReviews = () => {
     const toOtherProfile = (buyerId) => {
       navigation.push("MannerInfo", {

@@ -30,15 +30,12 @@ type MannerReviewProps = NativeStackScreenProps<
 
 function MannerReview({ navigation, route }: MannerReviewProps) {
   const { session, url } = useStore();
-  const [buyerName, setBuyerName] = useState(session.username);
   const [sellerName, setSellerName] = useState(route.params.seller_name);
-  const [buyerId, setBuyerId] = useState(session.member_id);
   const [sellerId, setSellerId] = useState(route.params.seller_Id);
   const [postId, setPostId] = useState(route.params.post_Id);
   const [currentIndex, setCurrentIndex] = useState(4);
   const [score, setScore] = useState(10);
   const data = ["F", "D", "C0", "C+", "B0", "B+", "A0", "A+"];
-  const [newIndex, setNewIndex] = useState(4);
   const [goodPrice, setGoodPrice] = useState(false);
   const [goodTime, setGoodTime] = useState(false);
   const [fastResponse, setFastResponse] = useState(false);
@@ -48,10 +45,12 @@ function MannerReview({ navigation, route }: MannerReviewProps) {
   const [reDealing, setReDealing] = useState(false);
   const [announcement, setAnnouncement] = useState(0);
 
+  /** 뒤로 가기 이동 함수 */
   const goBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
+  /** 구매 후기 작성시 점수 조정 함수 */
   const handleButtonPress = (direction) => {
     if (direction === "prev") {
       setCurrentIndex(currentIndex - 1);
@@ -101,6 +100,7 @@ function MannerReview({ navigation, route }: MannerReviewProps) {
     }
   }, [currentIndex]);
 
+  /** 후기 내용 입력 여부 확인 함수 */
   function submitButton() {
     if (text === "") {
       Alert.alert("후기 내용을 입력해야 합니다", "", [
@@ -114,6 +114,7 @@ function MannerReview({ navigation, route }: MannerReviewProps) {
     }
   }
 
+  /** submitButton 함수에서 등록 버튼 클릭시 후기 제출하는 함수 */
   function submitReview() {
     const request = {
       buyerId: session.member_id,
