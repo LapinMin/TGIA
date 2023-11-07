@@ -8,7 +8,6 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
-  Image,
   FlatList,
   Platform
 } from "react-native";
@@ -26,15 +25,18 @@ type RootStackParamList = {
 };
 type FavScreenProps = NativeStackScreenProps<RootStackParamList, "Fav">;
 
+/** 찜목록 화면 */
 function FavScreen({ route, navigation }: FavScreenProps) {
   const { session, url } = useStore();
   const isFocused = useIsFocused();
   const [posts, setPosts] = useState([]);
 
+  /** 프로필 화면으로 돌아가는 함수 */
   const toProfile = useCallback(() => {
     navigation.navigate("Profile");
   }, [navigation]);
 
+  /** 찜한 상품 렌더링 함수 */
   const renderItem = ({ item }) => {
     const renderBoard = {
       post_id: item.post_id,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,9 +6,7 @@ import {
   StyleSheet,
   Dimensions,
   SafeAreaView,
-  Alert,
   Image,
-  TouchableHighlight,
   TextInput,
   TouchableOpacity
 } from "react-native";
@@ -68,6 +66,7 @@ function ChangeProfile({ navigation, route }: ChangeProfileScreenProps) {
     });
   };
 
+  /** 프로필 변경시 서버로 데이터 전송하는 함수 */
   const confirm = () => {
     const request = {
       member_id: route.params.member_id, // 유저 아이디
